@@ -25,7 +25,6 @@ impl Oscillator {
     }
 }
 
-#[derive(Clone, Copy)]
 enum Waveform {
     Sine,
 }
