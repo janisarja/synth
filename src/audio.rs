@@ -1,9 +1,10 @@
 use std::time::Duration;
+use std::sync::mpsc::Receiver;
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 
-use crate::synth::Synth;
+use crate::synth::{Synth, SynthEvent};
 
-pub fn build_stream(mut synth: Synth) {
+pub fn build_stream(mut synth: Synth, rx: Receiver<SynthEvent>) {
     let host = cpal::default_host();
 
     let device = host
@@ -21,6 +22,9 @@ pub fn build_stream(mut synth: Synth) {
         .build_output_stream(
             config.into(),
             move |data: &mut [f32], _| {
+                while let Ok(event) = rx.try_recv() {
+                    synth.handle_event(event);
+                }
                 for frame in data.chunks_mut(channels) {
                     let sample = synth.next_sample(sample_rate);
 

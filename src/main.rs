@@ -1,12 +1,15 @@
 mod audio;
 mod synth;
 
-use crate::synth::Synth;
+use crate::synth::{Synth, SynthEvent};
 
 fn main() {
-    let mut synth = Synth::new();
-    synth.note_on(69);
-    synth.note_on(73);
-    synth.note_on(76);
-    audio::build_stream(synth);
+    let (tx, rx) = std::sync::mpsc::channel::<SynthEvent>();
+    let synth = Synth::new();
+
+    tx.send(SynthEvent::NoteOn(69)).unwrap();
+    tx.send(SynthEvent::NoteOn(73)).unwrap();
+    tx.send(SynthEvent::NoteOn(76)).unwrap();
+
+    audio::build_stream(synth, rx);
 }

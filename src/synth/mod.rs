@@ -3,3 +3,4 @@ pub mod synth;
 
 pub use oscillator::Oscillator;
 pub use synth::Synth;
+pub use synth::SynthEvent;  

@@ -1,7 +1,12 @@
 use crate::synth::Oscillator;
 
+pub enum SynthEvent {
+    NoteOn(u8),
+    NoteOff(u8),
+}
+
 pub struct Synth {
-    voices: Vec<Voice>
+    voices: Vec<Voice>,
 }
 
 impl Synth {
@@ -23,8 +28,12 @@ impl Synth {
 
         sample
     }
-    pub fn note_on(&mut self, note: u8) {
-        self.voices.push(Voice::new(note));
+
+    pub fn handle_event(&mut self, event: SynthEvent) {
+        match event {
+            SynthEvent::NoteOn(note) => self.voices.push(Voice::new(note)),
+            SynthEvent::NoteOff(note) => println!("{note} off"),
+        }
     }
 }
 
