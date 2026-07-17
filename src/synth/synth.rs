@@ -35,9 +35,13 @@ impl Synth {
         let length = self.voices.len();
         println!("{length} voices");
         match event {
-            SynthCommand::PlayNote(note) => self.voices.push(Voice::new(note)),
+            SynthCommand::PlayNote(note) => self.play_note(note),
             SynthCommand::ReleaseNote(note) => self.release_note(note),
         }
+    }
+
+    fn play_note(&mut self, note: u8) {
+        self.voices.push(Voice::new(note))
     }
 
     fn release_note(&mut self, note: u8) {
@@ -65,13 +69,13 @@ impl Voice {
         }
     }
 
-    fn release(&mut self) {
-        self.released = true;
-    }
-
     fn next_sample(&mut self, sample_rate: f32) -> f32 {
         let phase_increment = note_to_freq(self.note) / sample_rate;
         self.oscillator.next_sample(phase_increment)
+    }
+
+    fn release(&mut self) {
+        self.released = true;
     }
 }
 
