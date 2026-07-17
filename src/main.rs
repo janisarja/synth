@@ -2,12 +2,12 @@ mod audio;
 mod input;
 mod synth;
 
-use crate::synth::{Synth, SynthEvent};
+use crate::synth::{Synth, SynthCommand};
 
 fn main() {
     // Channel for input. Sender is passed to input and receiver to audio 
     // processing which calls synth to handle events in audio callback.
-    let (tx, rx) = std::sync::mpsc::channel::<SynthEvent>();
+    let (tx, rx) = std::sync::mpsc::channel::<SynthCommand>();
 
     let synth = Synth::new();
 

@@ -2,9 +2,9 @@ use std::time::Duration;
 use std::sync::mpsc::Receiver;
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
 
-use crate::synth::{Synth, SynthEvent};
+use crate::synth::{Synth, SynthCommand};
 
-pub fn build_stream(mut synth: Synth, rx: Receiver<SynthEvent>) {
+pub fn build_stream(mut synth: Synth, rx: Receiver<SynthCommand>) {
     let host = cpal::default_host();
 
     let device = host

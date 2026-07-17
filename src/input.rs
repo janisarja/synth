@@ -1,15 +1,26 @@
 use std::sync::mpsc::Sender;
+use std::collections::HashSet;
 use crossterm::event::{Event, KeyEventKind, KeyCode, read};
 
-use crate::synth::SynthEvent;
+use crate::synth::SynthCommand;
 
-pub fn listen_keyboard(tx: Sender<SynthEvent>) {
+pub fn listen_keyboard(tx: Sender<SynthCommand>) {
     std::thread::spawn(move || {
+        let mut held = HashSet::new();
+        
         loop {
             if let Ok(Event::Key(key)) = read() {
                 if key.kind == KeyEventKind::Press {
                     if let Some(note) = key_to_note(key.code) {
-                        tx.send(SynthEvent::NoteOn(note)).unwrap();
+                        if held.insert(key.code) {
+                            tx.send(SynthCommand::PlayNote(note)).unwrap();
+                        }
+                    }
+                }
+                if key.kind == KeyEventKind::Release {
+                    if let Some(note) = key_to_note(key.code) {
+                        held.remove(&key.code);
+                        tx.send(SynthCommand::ReleaseNote(note)).unwrap();
                     }
                 }
             }
