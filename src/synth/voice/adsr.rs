@@ -68,6 +68,10 @@ impl ADSR {
         }
     }
 
+    pub fn is_released(&self) -> bool {
+        matches!(self.state, ADSRState::Release | ADSRState::Dead)
+    }
+
     pub fn is_dead(&self) -> bool {
         matches!(self.state, ADSRState::Dead)
     }
