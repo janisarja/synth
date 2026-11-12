@@ -1,0 +1,1 @@
+A digital synthesizer built in Rust.
